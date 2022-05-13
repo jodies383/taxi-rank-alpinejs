@@ -1,6 +1,55 @@
-body{
+body {
     text-align: center !important;
 }
+
+table {
+    margin-top: 1%;
+}
+
+.heading, .heading:hover {
+    font-size: 3em !important;
+    margin-top: 8px;
+    cursor: default;
+
+}
+
+/* modal */
+.modal-popup {
+    display: flex;
+    
+    /* align-items: center; */
+    /* justify-content: center; */
+    position: fixed;
+    /* text-align: center !important; */
+    width: 90%;
+    /* height: -90% !important; */
+}
+
+.model-inner {
+    background-color: white;
+    border-style: solid;
+    border-radius: 0.5em;
+    max-width: 600px;
+    padding: 2em;
+    margin: auto;
+    text-align: center !important;
+}
+
+[x-cloak] {
+    display: none !important;
+}
+
+.overlay {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: black;
+    opacity: 0.75;
+}
+
+/*  */
 #snackbar {
     /* visibility: hidden; Hidden by default. Visible on click */
     min-width: 250px;

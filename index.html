@@ -13,14 +13,12 @@
 
 <body>
     <div class="container">
-        <h1>Taxi Rank AlpineJS</h1>
+        <h1 class="btn btn-dark heading">Taxi Rank AlpineJS</h1>
         <div x-data="{ errorMessage: false }">
             <div x-data="{ successMessage: false }">
-                <div x-data="{ noTaxisError: false }">
-                    <p id="snackbar" x-show="errorMessage">taxi needs at least 12 passengers to depart</p>
-                    <p id="snackbar" x-show="noTaxisError">there are currently no taxis available</p>
-                    <p id="snackbar" x-show="successMessage">taxi has successfully departed</p>
-                    <div x-data="{ rank : [{
+                <p id="snackbar" x-ref="errorMessage" x-show="errorMessage"></p>
+                <p id="snackbar" x-ref="successMessage" x-show="successMessage"></p>
+                <div x-data="{ rank : $persist([{
                         destination: 'Makhaza',
                         queue: 12,
                         departedTaxis: 0,
@@ -43,19 +41,56 @@
                         taxiFare: 20.00,
                         totalFare: 0,
                         availTaxis: 5
-                    }]}">
+                    }])}">
+
+                    <div x-data="{ dailyProfit: $persist(0)}">
+                        Total profit for today: R <span x-text="dailyProfit.toFixed(2)"></span>
+                        <div x-data="{ isModalOpen: false}" x-on:keydown.escape="isModalOpen=false">
+                            <div class="modal-popup" role="dialog" x-show="isModalOpen"
+                                x-on:click.away="isModalOpen = false" x-cloak x-transition>
+                                <div class="model-inner" x-data="{ destination: '' }">
+                                    <span x-data="{ fare: '' }">
+                                        <span x-data="{ taxis: '' }">
+                                            <h3>add a new destination</h3>
+
+                                            <p>
+                                                Destination: <br> <input type="text" x-model="destination">
+                                            </p>
+                                            <p>
+                                                Trip fare: <br> <input type="text" x-model="fare">
+                                            </p>
+                                            <p>
+                                                Available taxis: <br> <input type="text" x-model="taxis">
+                                            </p>
+
+                                            <button class="btn btn-dark" aria-label="Close"
+                                                x-on:click="rank.push({ destination: destination,
+                                                queue: 0,
+                                                departedTaxis: 0,
+                                                taxiFare: fare,
+                                                totalFare: 0,
+                                                availTaxis: taxis
+                                                });successMessage=true;$refs.successMessage.innerText = 'destination added'; setTimeout(() => { successMessage=false }, 2000);isModalOpen=false">save</button>
+                                            <button class="btn btn-dark" aria-label="Close"
+                                                x-on:click="isModalOpen=false">close</button>
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                            <button class="btn btn-dark" x-on:click="isModalOpen=true">Add a destination</button>
+                        </div>
                         <template x-for="taxi in rank">
-                            <table class="table table-success table-striped">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Destination</th>
-                                        <th scope="col">Queue</th>
-                                        <th scope="col">Taxi</th>
-                                        <th scope="col">Trip Fare</th>
-                                        <th scope="col">Total Fare Made</th>
-                                        <th scope="col">Available Taxis</th>
-                                    </tr>
-                                </thead>
+                                <table class="table table-success table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Destination</th>
+                                            <th scope="col">Queue</th>
+                                            <th scope="col">Taxi</th>
+                                            <th scope="col">Trip Fare</th>
+                                            <th scope="col">Total Fare Made</th>
+                                            <th scope="col">Available Taxis</th>
+                                        </tr>
+                                    </thead>
                                 <tbody>
                                     <tr>
                                         <th scope="row">
@@ -63,35 +98,41 @@
                                         </th>
                                         <td> <button class="btn btn-dark" x-on:click="taxi.queue++">+</button>
                                             <span x-text="taxi.queue"></span>
-                                            <button class="btn btn-dark" x-on:click="taxi.queue--">-</button>
+                                            <button class="btn btn-dark"
+                                                x-on:click="if (taxi.queue >= 1) { taxi.queue-- }">-</button>
                                         </td>
-                                        <td><button class="btn btn-dark"
-                                                x-on:click="if (taxi.queue >= 12 && taxi.availTaxis > 0) {taxi.queue-=12, taxi.departedTaxis++, taxi.totalFare+=taxi.taxiFare, taxi.availTaxis--, successMessage=true} else if (taxi.queue < 12) {errorMessage=true; setTimeout(() => { errorMessage=false }, 2000)}; setTimeout(() => { successMessage=false }, 2000); if (taxi.availTaxis <= 0){noTaxisError=true} setTimeout(() => { noTaxisError=false }, 2000)">taxi
+                                        <td>
+                                            <button class="btn btn-dark"
+                                                x-on:click="if (taxi.queue >= 12 && taxi.availTaxis > 0) {taxi.queue-=12, taxi.departedTaxis++, taxi.totalFare+=(taxi.taxiFare*12), dailyProfit+=taxi.totalFare, taxi.availTaxis--, successMessage=true, $refs.successMessage.innerText = 'taxi has successfully departed'} else if (taxi.queue < 12) {$refs.errorMessage.innerText = 'taxi needs at least 12 passengers to depart', errorMessage=true; setTimeout(() => { errorMessage=false }, 2000)}; setTimeout(() => { successMessage=false }, 2000); if (taxi.availTaxis <= 0){$refs.errorMessage.innerText = 'there are currently no taxis available', errorMessage=true} setTimeout(() => { errorMessage=false }, 2000);">taxi
                                                 departed</button> <br> <span x-text="taxi.departedTaxis"></span>
                                             taxi(s)
-                                            departed</td>
-                                        <td>
-                                            <p x-text="taxi.taxiFare.toFixed(2)"></p>
+                                            departed
                                         </td>
                                         <td>
-                                            <p x-text="taxi.totalFare.toFixed(2)"></p>
+                                            R <span x-text="Number(taxi.taxiFare).toFixed(2)"></span>
+                                        </td>
+                                        <td>
+                                            R <span x-text="taxi.totalFare.toFixed(2)"></span>
                                         </td>
                                         <td>
                                             <p x-text="taxi.availTaxis"></p>
+                                            <button class="btn btn-dark"
+                                                x-on:click="taxi.availTaxis++;$refs.successMessage.innerText = 'taxi added' ;successMessage=true;setTimeout(() => { successMessage=false }, 2000)">Add
+                                                a taxi</button>
                                         </td>
                                     </tr>
+                                </template>
                                 </tbody>
-                            </table>
-                        </template>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <!-- Alpine Plugins -->
+    <script defer src="https://unpkg.com/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
 
-
-
-
+    <!-- Alpine Core -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </body>
 
