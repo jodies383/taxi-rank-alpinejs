@@ -1,22 +1,44 @@
-body {
-    text-align: center !important;
-}
-
+@import url('https://fonts.googleapis.com/css2?family=Jost:wght@200&display=swap');
 table {
     margin-top: 1%;
+    margin-bottom: 3%;
+    border-radius: 0.5em !important;
+    background-color: #B4CDED !important;
+    color: rgb(66, 62, 62) !important;
+    text-align: center !important;
 }
-
-.heading, .heading:hover {
-    font-size: 3em !important;
-    margin-top: 8px;
-    cursor: default;
+nav {
+    color: white;
+    background-color: #3f3d3d !important;
+    margin-bottom: 7px;
+    box-shadow: 0 1px 6px 0 rgb(32 33 36 / 28%);
+}
+.heading{
+    font-family: 'Jost', sans-serif;
+    padding: 0.4em !important;
+}
+button{
+    background-color: #76a0c8 !important;
+    border: none !important;
+}
+.footer{
+    margin-top: 1em !important;
+    color: white;
+    background-color: #3f3d3d !important;
+    padding: 0.3em !important;
+    box-shadow: 0 1px 6px 0 rgb(32 33 36 / 28%);
+}
+.error{
+    background-color: rgb(221, 98, 98) !important;
+}
+.success{
+    background-color: rgb(99, 187, 99) !important;
 
 }
-
 /* modal */
 .modal-popup {
     display: flex;
-    
+    margin-top: 9em;
     /* align-items: center; */
     /* justify-content: center; */
     position: fixed;
@@ -26,11 +48,12 @@ table {
 }
 
 .model-inner {
+   
     background-color: white;
     border-style: solid;
     border-radius: 0.5em;
     max-width: 600px;
-    padding: 2em;
+    padding: 4em;
     margin: auto;
     text-align: center !important;
 }
@@ -40,10 +63,11 @@ table {
 }
 
 .overlay {
+    
     width: 100%;
     height: 100%;
     position: fixed;
-    top: 0;
+    top: 1em;
     left: 0;
     background: black;
     opacity: 0.75;
