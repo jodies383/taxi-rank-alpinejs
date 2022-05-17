@@ -32,12 +32,15 @@ document.addEventListener('alpine:init', () => {
             totalFare: 0,
             availTaxis: 5
         }]),
+
         increment() {
             this.taxi.queue++
         },
+
         decrement() {
             if (this.taxi.queue >= 1) { this.taxi.queue-- }
         },
+
         departTaxi() {
             if (this.taxi.queue >= 12 && this.taxi.availTaxis > 0) {
                 this.taxi.queue -= 12, this.taxi.departedTaxis++,
@@ -50,19 +53,21 @@ document.addEventListener('alpine:init', () => {
                 this.$refs.errorMessage.innerText = 'taxi needs at least 12 passengers to depart',
                     this.errorMessage = true;
                 setTimeout(() => { this.errorMessage = false }, 2000)
-            };
+            } else if (this.taxi.availTaxis <= 0) {
+                this.$refs.errorMessage.innerText = 'there are currently no taxis available', 
+                this.errorMessage = true
+            }
             setTimeout(() => { this.successMessage = false }, 2000);
-            if (this.taxi.availTaxis <= 0) {
-                this.$refs.errorMessage.innerText = 'there are currently no taxis available', this.errorMessage = true
-            } 
             setTimeout(() => { this.errorMessage = false }, 2000);
         },
-        addATaxi(){
+
+        addATaxi() {
             this.taxi.availTaxis++;
-            this.$refs.successMessage.innerText = 'taxi added' ;
-            this.successMessage=true;
-            setTimeout(() => { this.successMessage=false }, 2000)
+            this.$refs.successMessage.innerText = 'taxi added';
+            this.successMessage = true;
+            setTimeout(() => { this.successMessage = false }, 2000)
         },
+
         addDestination() {
             let numRegex = /^[0-9][0-9]?$|^100$/
             let lettersRegex = /^[A-Za-z\s]+$/
@@ -84,16 +89,20 @@ document.addEventListener('alpine:init', () => {
                     this.successMessage = true;
                 this.$refs.successMessage.innerText = 'destination added'
             };
-            setTimeout(() => { this.successMessage = false }, 2000); setTimeout(() => { this.errorMessage = false }, 2000);
+            setTimeout(() => { this.successMessage = false }, 2000);
+            setTimeout(() => { this.errorMessage = false }, 2000);
             if (!this.destination) {
                 this.errorMessage = true, this.$refs.errorMessage.innerText = 'missing destination name'
             } else if (!this.fare) {
                 this.errorMessage = true, this.$refs.errorMessage.innerText = 'no fare added'
             } else if (!this.taxis) {
                 this.errorMessage = true, this.$refs.errorMessage.innerText = 'no available taxis added'
-            } else if (duplicate(this.rank, this.destination) === true) {
-                this.errorMessage = true, this.$refs.errorMessage.innerText = 'this destination has already been added'
-            };
+            } 
+            if (duplicate(this.rank, this.destination) === true) {
+                this.errorMessage = true, this.$refs.errorMessage.innerText = 'this destination already exists'
+            } else if (duplicate(this.rank, this.destination) === false) {
+            this.errorMessage = false
+        };
         }
     }))
 })
