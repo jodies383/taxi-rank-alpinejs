@@ -11,157 +11,94 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>Taxi Rank AlpineJS</title>
 </head>
-<script>
-    let numRegex = /^[0-9][0-9]?$|^100$/
-    let lettersRegex = /^[A-Za-z\s]+$/
-</script>
-<body>
-    <div x-data="{ errorMessage: false }">
-        <div x-data="{ successMessage: false }">
-            <p id="snackbar" class="error" x-ref="errorMessage" x-show="errorMessage"></p>
-            <p id="snackbar" class="success" x-ref="successMessage" x-show="successMessage"></p>
-            <div x-data="{ rank : $persist([{
-                        destination: 'Makhaza',
-                        queue: 12,
-                        departedTaxis: 0,
-                        taxiFare: 12.00,
-                        totalFare: 0,
-                        availTaxis: 5
-                    },
-                    {
-                        destination: 'Belhar',
-                        queue: 34,
-                        departedTaxis: 0,
-                        taxiFare: 18.50,
-                        totalFare: 0,
-                        availTaxis: 5
-                    },
-                    {
-                        destination: 'Bellville',
-                        queue: 23,
-                        departedTaxis: 0,
-                        taxiFare: 20.00,
-                        totalFare: 0,
-                        availTaxis: 5
-                    }])}">
-                <div x-data="{ dailyProfit: $persist(0)}">
-                    <div  x-data="{ isModalOpen: false}" x-on:keydown.escape="isModalOpen=false">
-                        <div class="modal-popup container" role="dialog" x-show="isModalOpen"
-                            x-on:click.away="isModalOpen = false" x-cloak x-transition>
-                            <div class="model-inner" x-data="{ destination: '' }">
-                                <span x-data="{ fare: '' }">
-                                    <span x-data="{ taxis: '' }">
-                                        <h3>add a new destination</h3>
 
-                                        <p>
-                                            Destination: <br> <input type="text" x-model="destination">
-                                        </p>
-                                        <p>
-                                            Trip fare: <br> <input type="text" x-model="fare">
-                                        </p>
-                                        <p>
-                                            Available taxis: <br> <input type="text" x-model="taxis">
-                                        </p>
+<body x-data="taxi">
+    <p id="snackbar" class="error" x-ref="errorMessage" x-show="errorMessage"></p>
+    <p id="snackbar" class="success" x-ref="successMessage" x-show="successMessage"></p>
+    <div x-data="{ isModalOpen: false}" x-on:keydown.escape="isModalOpen=false">
+        <div class="modal-popup container" role="dialog" x-show="isModalOpen" x-on:click.away="isModalOpen = false"
+            x-cloak x-transition>
+            <div class="model-inner">
+                <h3>add a new destination</h3>
+                <p>
+                    Destination: <br> <input type="text" x-model="destination">
+                </p>
+                <p>
+                    Trip fare: <br> <input type="text" x-model="fare">
+                </p>
+                <p>
+                    Available taxis: <br> <input type="text" x-model="taxis">
+                </p>
 
-                                        <button class="btn btn-dark" aria-label="Close"
-                                            x-on:click="const duplicate = (arr, val) => {
-                                            return arr.some(function (arrVal) {
-                                                return val === arrVal.destination;
-                                            });
-                                        }
-                                        if (lettersRegex.test(destination) && numRegex.test(fare) && numRegex.test(taxis) && duplicate(rank, destination) === false) 
-                                        {rank.push({ destination: destination,
-                                            queue: 0,
-                                            departedTaxis: 0,
-                                            taxiFare: fare,
-                                            totalFare: 0,
-                                            availTaxis: taxis
-                                        });errorMessage=false, successMessage=true;$refs.successMessage.innerText = 'destination added'}; setTimeout(() => { successMessage=false }, 2000); setTimeout(() => { errorMessage=false }, 2000); if (!destination){errorMessage=true, $refs.errorMessage.innerText = 'missing destination name'} else if (!fare){errorMessage=true, $refs.errorMessage.innerText = 'no fare added'} else if (!taxis){errorMessage=true, $refs.errorMessage.innerText='no available taxis added'} else if (duplicate(rank, destination) === true) {errorMessage=true, $refs.errorMessage.innerText='this destination has already been added'};isModalOpen=false">save</button>
-                                        <button class="btn btn-dark" aria-label="Close"
-                                            x-on:click="isModalOpen=false">close</button>
-                                    </span>
-                                </span>
-                            </div>
+                <button class="btn btn-dark" aria-label="Close"
+                    x-on:click="addDestination(); isModalOpen=false">save</button>
+                <button class="btn btn-dark" aria-label="Close" x-on:click="isModalOpen=false">close</button>
+            </div>
+
+        </div>
+
+        <nav class="navbar">
+            <h1 class="heading">taxi rank alpinejs</h1>
+            <button class="btn btn-dark destination" x-on:click="isModalOpen=true">Add a destination</button>
+        </nav>
+        <div class="container">
+            Total profit for today: R <span x-text="dailyProfit.toFixed(2)"></span>
+            <template x-for="taxi in rank">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-wrap">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Destination</th>
+                                        <th scope="col">Queue</th>
+                                        <th scope="col">Taxi</th>
+                                        <th scope="col">Trip Fare</th>
+                                        <th scope="col">Total Fare Made</th>
+                                        <th scope="col">Available Taxis</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th>
+                                            <p x-text="taxi.destination"></p>
+                                        </th>
+                                        <td> <button class="btn btn-dark" x-on:click="increment()">+</button>
+                                            <span x-text="taxi.queue"></span>
+                                            <button class="btn btn-dark" x-on:click="decrement()">-</button>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-dark" x-on:click="departTaxi()">taxi
+                                                departed</button>
+                                            <br> <span x-text="taxi.departedTaxis"></span> taxi(s) departed
+                                        </td>
+                                        <td>
+                                            R <span x-text="Number(taxi.taxiFare).toFixed(2)"></span>
+                                        </td>
+                                        <td>
+                                            R <span x-text="taxi.totalFare.toFixed(2)"></span>
+                                        </td>
+                                        <td>
+                                            <p x-text="taxi.availTaxis"></p>
+                                            <button class="btn btn-dark" x-on:click="addATaxi()">Add a taxi</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-                        <nav class="navbar">
-                            <h1 class="heading">taxi rank alpinejs</h1>
-                            <button class="btn btn-dark destination" x-on:click="isModalOpen=true">Add a destination</button>
-                            
-                        </nav>
-                    <div class="container">
-                            Total profit for today: R <span x-text="dailyProfit.toFixed(2)"></span>
-                        <template x-for="taxi in rank">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="table-wrap">
-                                        <table class="table table-hover">
-                                            <thead>
-                                                <tr>
-                                                    <th scope="col">Destination</th>
-                                                    <th scope="col">Queue</th>
-                                                    <th scope="col">Taxi</th>
-                                                    <th scope="col">Trip Fare</th>
-                                                    <th scope="col">Total Fare Made</th>
-                                                    <th scope="col">Available Taxis</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <th>
-                                                        <p x-text="taxi.destination"></p>
-                                                    </th>
-                                                    <td> <button class="btn btn-dark"
-                                                            x-on:click="taxi.queue++">+</button>
-                                                        <span x-text="taxi.queue"></span>
-                                                        <button class="btn btn-dark"
-                                                            x-on:click="if (taxi.queue >= 1) { taxi.queue-- }">-</button>
-                                                    </td>
-                                                    <td>
-                                                        <button class="btn btn-dark"
-                                                            x-on:click="if (taxi.queue >= 12 && taxi.availTaxis > 0) {taxi.queue-=12, taxi.departedTaxis++, taxi.totalFare+=(taxi.taxiFare*12), dailyProfit+=taxi.totalFare, taxi.availTaxis--, successMessage=true, $refs.successMessage.innerText = 'taxi has successfully departed'} else if (taxi.queue < 12) {$refs.errorMessage.innerText = 'taxi needs at least 12 passengers to depart', errorMessage=true; setTimeout(() => { errorMessage=false }, 2000)}; setTimeout(() => { successMessage=false }, 2000); if (taxi.availTaxis <= 0){$refs.errorMessage.innerText = 'there are currently no taxis available', errorMessage=true} setTimeout(() => { errorMessage=false }, 2000);">taxi
-                                                            departed</button> <br> <span
-                                                            x-text="taxi.departedTaxis"></span>
-                                                        taxi(s)
-                                                        departed
-                                                    </td>
-                                                    <td>
-                                                        R <span x-text="Number(taxi.taxiFare).toFixed(2)"></span>
-                                                    </td>
-                                                    <td>
-                                                        R <span x-text="taxi.totalFare.toFixed(2)"></span>
-                                                    </td>
-                                                    <td>
-                                                        <p x-text="taxi.availTaxis"></p>
-                                                        <button class="btn btn-dark"
-                                                            x-on:click="taxi.availTaxis++;$refs.successMessage.innerText = 'taxi added' ;successMessage=true;setTimeout(() => { successMessage=false }, 2000)">Add
-                                                            a taxi</button>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </template>
-                    </div>
                     </div>
                 </div>
-            </div>
+            </template>
         </div>
     </div>
-    <!-- <div class="footer fixed-bottom">
-        <div class="contact">
-            <strong>Contact us at:</strong>
-            (021)-541-1000
-
-            <strong>twitter /fb /insta </strong> @taxirankapp
-        </div>
-    </div> -->
     <!-- Alpine Plugins -->
     <script defer src="https://unpkg.com/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
 
     <!-- Alpine Core -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- app.js -->
+    <script src="app.js"></script>
 </body>
 
 </html>

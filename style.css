@@ -21,12 +21,8 @@ button{
     background-color: #76a0c8 !important;
     border: none !important;
 }
-.footer{
-    margin-top: 1em !important;
-    color: white;
+button:hover{
     background-color: #3f3d3d !important;
-    padding: 0.3em !important;
-    box-shadow: 0 1px 6px 0 rgb(32 33 36 / 28%);
 }
 .error{
     background-color: rgb(221, 98, 98) !important;
