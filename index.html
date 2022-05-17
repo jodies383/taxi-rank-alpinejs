@@ -11,7 +11,10 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>Taxi Rank AlpineJS</title>
 </head>
-
+<script>
+    let numRegex = /^[0-9][0-9]?$|^100$/
+    let lettersRegex = /^[A-Za-z\s]+$/
+</script>
 <body>
     <div x-data="{ errorMessage: false }">
         <div x-data="{ successMessage: false }">
@@ -66,7 +69,7 @@
                                                 return val === arrVal.destination;
                                             });
                                         }
-                                        if (destination && fare && taxis && duplicate(rank, destination) === false) 
+                                        if (lettersRegex.test(destination) && numRegex.test(fare) && numRegex.test(taxis) && duplicate(rank, destination) === false) 
                                         {rank.push({ destination: destination,
                                             queue: 0,
                                             departedTaxis: 0,
