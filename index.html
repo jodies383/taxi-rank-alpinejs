@@ -73,7 +73,7 @@
                                             taxiFare: fare,
                                             totalFare: 0,
                                             availTaxis: taxis
-                                        });successMessage=true;$refs.successMessage.innerText = 'destination added'}; setTimeout(() => { successMessage=false }, 2000); setTimeout(() => { errorMessage=false }, 2000); if (!destination){errorMessage=true, $refs.errorMessage.innerText = 'missing destination name'} else if (!fare){errorMessage=true, $refs.errorMessage.innerText = 'no fare added'} else if (!taxis){errorMessage=true, $refs.errorMessage.innerText='no available taxis added'} else if (duplicate(rank, destination) === true) {errorMessage=true, $refs.errorMessage.innerText='this destination has already been added'};isModalOpen=false">save</button>
+                                        });errorMessage=false, successMessage=true;$refs.successMessage.innerText = 'destination added'}; setTimeout(() => { successMessage=false }, 2000); setTimeout(() => { errorMessage=false }, 2000); if (!destination){errorMessage=true, $refs.errorMessage.innerText = 'missing destination name'} else if (!fare){errorMessage=true, $refs.errorMessage.innerText = 'no fare added'} else if (!taxis){errorMessage=true, $refs.errorMessage.innerText='no available taxis added'} else if (duplicate(rank, destination) === true) {errorMessage=true, $refs.errorMessage.innerText='this destination has already been added'};isModalOpen=false">save</button>
                                         <button class="btn btn-dark" aria-label="Close"
                                             x-on:click="isModalOpen=false">close</button>
                                     </span>
@@ -82,7 +82,8 @@
                         </div>
                         <nav class="navbar">
                             <h1 class="heading">taxi rank alpinejs</h1>
-                            <button class="btn btn-dark" x-on:click="isModalOpen=true">Add a destination</button>
+                            <button class="btn btn-dark destination" x-on:click="isModalOpen=true">Add a destination</button>
+                            
                         </nav>
                     <div class="container">
                             Total profit for today: R <span x-text="dailyProfit.toFixed(2)"></span>

@@ -72,7 +72,9 @@ button{
     background: black;
     opacity: 0.75;
 }
-
+.destination{
+    margin-right: 1%;
+}
 /*  */
 #snackbar {
     /* visibility: hidden; Hidden by default. Visible on click */
