@@ -32,11 +32,10 @@
 
                 <button class="btn btn-dark" aria-label="Close"
                     x-on:click="addDestination(); isModalOpen=false">save</button>
-                <button class="btn btn-dark" aria-label="Close" x-on:click="isModalOpen=false">close</button>
+                <button class="btn btn-dark" aria-label="Close" x-on:click="isModalOpen=false">cancel</button>
             </div>
 
         </div>
-
         <nav class="navbar">
             <h1 class="heading">taxi rank alpinejs</h1>
             <button class="btn btn-dark destination" x-on:click="isModalOpen=true">Add a destination</button>
@@ -73,14 +72,32 @@
                                             <br> <span x-text="taxi.departedTaxis"></span> taxi(s) departed
                                         </td>
                                         <td>
-                                            R <span x-text="Number(taxi.taxiFare).toFixed(2)"></span>
+                                            <button class="btn btn-dark" x-on:click="increaseFare()">+</button>
+                                            R <input type="number" x-model="Number(taxi.taxiFare).toFixed(2)">
+                                            <button class="btn btn-dark" x-on:click="decreaseFare()">-</button>
                                         </td>
                                         <td>
                                             R <span x-text="taxi.totalFare.toFixed(2)"></span>
                                         </td>
                                         <td>
                                             <p x-text="taxi.availTaxis"></p>
-                                            <button class="btn btn-dark" x-on:click="addATaxi()">Add a taxi</button>
+                                            <div x-data="{ addATaxiBtn: true}">
+                                                <div x-data="{ secondModalOpen: false}">
+                                                    <div class="" role="dialog" x-show="secondModalOpen">
+                                                        <div>
+                                                            <input type="text" placeholder="taxi registration number"
+                                                                x-model="taxiReg">
+                                                            <button class="btn btn-dark" aria-label="Close"
+                                                                x-on:click="addATaxi(); secondModalOpen=false; addATaxiBtn=true">add</button>
+                                                            <button class="btn btn-dark" aria-label="Close"
+                                                                x-on:click="secondModalOpen=false;addATaxiBtn=true">cancel</button>
+                                                        </div>
+
+                                                    </div>
+                                                    <button x-show="addATaxiBtn" class="btn btn-dark"
+                                                        x-on:click="secondModalOpen=true; addATaxiBtn=false">Add a
+                                                        taxi</button>
+                                                </div>
                                         </td>
                                     </tr>
                                 </tbody>

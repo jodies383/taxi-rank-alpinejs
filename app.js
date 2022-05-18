@@ -7,6 +7,7 @@ document.addEventListener('alpine:init', () => {
         destination: '',
         fare: '',
         taxis: '',
+        taxiReg: '',
 
         rank: Alpine.$persist([{
             destination: 'Makhaza',
@@ -40,6 +41,13 @@ document.addEventListener('alpine:init', () => {
         decrement() {
             if (this.taxi.queue >= 1) { this.taxi.queue-- }
         },
+        increaseFare() {
+            this.taxi.taxiFare+=0.01
+        },
+        decreaseFare() {
+            if(this.taxi.taxiFare < 0.01) { this.taxi.taxiFare = 0 }
+            if (this.taxi.taxiFare >= 0.01) {this.taxi.taxiFare-=0.01}
+        },
 
         departTaxi() {
             if (this.taxi.queue >= 12 && this.taxi.availTaxis > 0) {
@@ -62,10 +70,19 @@ document.addEventListener('alpine:init', () => {
         },
 
         addATaxi() {
+            let regEx = /^[a-zA-Z]{2} [0-9]{3}(-[0-9]{3})$|[a-zA-Z]{2} [0-9]{3}([0-9]{3})$|[a-zA-Z]{2} ([0-9]{3} [0-9]{3})$|[a-zA-Z]{2} ([0-9]{4})$/i;
+            if (regEx.test(this.taxiReg)){
             this.taxi.availTaxis++;
             this.$refs.successMessage.innerText = 'taxi added';
-            this.successMessage = true;
+            this.successMessage = true;}
+            else{
+                this.$refs.errorMessage.innerText = 'invalid registration number';
+                this.errorMessage = true;
+            }
+            this.taxiReg = ''
             setTimeout(() => { this.successMessage = false }, 2000)
+            setTimeout(() => { this.errorMessage = false }, 2000)
+
         },
 
         addDestination() {
