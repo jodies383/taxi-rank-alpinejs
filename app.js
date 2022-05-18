@@ -54,8 +54,8 @@ document.addEventListener('alpine:init', () => {
                     this.errorMessage = true;
                 setTimeout(() => { this.errorMessage = false }, 2000)
             } else if (this.taxi.availTaxis <= 0) {
-                this.$refs.errorMessage.innerText = 'there are currently no taxis available', 
-                this.errorMessage = true
+                this.$refs.errorMessage.innerText = 'there are currently no taxis available',
+                    this.errorMessage = true
             }
             setTimeout(() => { this.successMessage = false }, 2000);
             setTimeout(() => { this.errorMessage = false }, 2000);
@@ -88,21 +88,23 @@ document.addEventListener('alpine:init', () => {
                 this.errorMessage = false,
                     this.successMessage = true;
                 this.$refs.successMessage.innerText = 'destination added'
+               
             };
-            setTimeout(() => { this.successMessage = false }, 2000);
-            setTimeout(() => { this.errorMessage = false }, 2000);
             if (!this.destination) {
                 this.errorMessage = true, this.$refs.errorMessage.innerText = 'missing destination name'
             } else if (!this.fare) {
                 this.errorMessage = true, this.$refs.errorMessage.innerText = 'no fare added'
             } else if (!this.taxis) {
                 this.errorMessage = true, this.$refs.errorMessage.innerText = 'no available taxis added'
-            } 
+            }
             if (duplicate(this.rank, this.destination) === true) {
                 this.errorMessage = true, this.$refs.errorMessage.innerText = 'this destination already exists'
-            } else if (duplicate(this.rank, this.destination) === false) {
-            this.errorMessage = false
-        };
+            }
+            setTimeout(() => { this.successMessage = false }, 2000);
+            setTimeout(() => { this.errorMessage = false }, 2000);
+            this.destination= '',
+            this.fare= '',
+            this.taxis= ''
         }
     }))
 })
